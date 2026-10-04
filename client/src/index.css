@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-base-950 text-slate-100;
+  font-family: "Inter", system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ---------- Animated flowing background ---------- */
+/* Wrapper keeps every background layer behind the page and click-through */
+.bg-root {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: #05070f;
+}
+
+.flow-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.flow-bg::before,
+.flow-bg::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(
+      circle at 20% 30%,
+      rgba(245, 158, 11, 0.38),
+      transparent 45%
+    ),
+    radial-gradient(circle at 80% 20%, rgba(217, 119, 6, 0.3), transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(250, 204, 21, 0.28), transparent 45%);
+  filter: blur(60px);
+  animation: flowMove 22s ease-in-out infinite alternate;
+}
+
+.flow-bg::after {
+  background: radial-gradient(
+      circle at 70% 70%,
+      rgba(180, 83, 9, 0.28),
+      transparent 45%
+    ),
+    radial-gradient(circle at 30% 60%, rgba(252, 211, 77, 0.2), transparent 40%);
+  filter: blur(80px);
+  animation: flowMove 30s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes flowMove {
+  0% {
+    transform: translate3d(-4%, -3%, 0) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate3d(4%, 3%, 0) rotate(8deg) scale(1.08);
+  }
+  100% {
+    transform: translate3d(-2%, 4%, 0) rotate(-6deg) scale(1.02);
+  }
+}
+
+.flow-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(circle at center, black 0%, transparent 80%);
+  animation: gridDrift 60s linear infinite;
+}
+
+@keyframes gridDrift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 400px 400px;
+  }
+}
+
+.particle {
+  position: absolute;
+  border-radius: 9999px;
+  background: rgba(250, 204, 21, 0.55);
+  filter: blur(1px);
+  animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-110vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+/* Glassmorphism helper */
+.glass {
+  background: rgba(17, 23, 38, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(245, 158, 11, 0.35);
+  border-radius: 999px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ---------- Reusable UI pieces ---------- */
+@layer components {
+  .input-field {
+    @apply w-full bg-base-800/80 border border-white/10 rounded-lg px-4 py-3 text-slate-100 placeholder:text-slate-500 transition focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-400 hover:to-accent-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-glow hover:-translate-y-0.5 active:translate-y-0;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 border border-white/15 hover:border-accent-500/60 hover:text-accent-400 text-slate-200 font-medium px-6 py-3 rounded-lg transition-colors;
+  }
+  .skeleton {
+    @apply rounded-lg bg-[linear-gradient(90deg,rgba(148,163,184,0.08)_25%,rgba(148,163,184,0.18)_50%,rgba(148,163,184,0.08)_75%)] bg-[length:800px_100%] animate-shimmer;
+  }
+  .page-enter {
+    @apply animate-fade-up;
+  }
+}
+
+/* Respect users who turn animations off in their OS settings */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
